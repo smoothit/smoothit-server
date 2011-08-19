@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<deployment xmlns="urn:jboss:bean-deployer:2.0">
+		<application-policy xmlns="urn:jboss:security-beans:1.0" name="sis-policy">
+			<authentication>
+				<login-module code="eu.smoothit.sis.security.login.SisDatabaseServerLoginModule" flag="required">
+					<module-option name="dsJndiName">java:/sisds</module-option>
+					<module-option name="principalsQuery">select password from security_users where username=?</module-option>
+					<module-option name="rolesQuery">SELECT role, role_group FROM security_roles AS R JOIN security_users_security_userroles AS J ON R.id = J.security_roles JOIN security_users AS U ON J.security_users=U.id WHERE U.username=?</module-option>
+					<module-option name="isAccountingEnable">true</module-option>
+					<module-option name="logInsertQuery">insert into security_logs(date, event, result, username) VALUES (?, ?, ?, ?)</module-option>
+					<module-option name="hashAlgorithm">MD5</module-option>
+					<module-option name="hashEncoding">base64</module-option> 
+				</login-module>
+			</authentication>
+		</application-policy>
+</deployment>

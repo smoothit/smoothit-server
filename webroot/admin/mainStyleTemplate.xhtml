@@ -1,0 +1,62 @@
+<html xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:ice="http://www.icesoft.com/icefaces/component">
+	<ice:outputDeclaration doctypeRoot="HTML"
+		doctypePublic="-//W3C//DTD HTML 4.01 Transitional//EN"
+		doctypeSystem="http://www.w3.org/TR/html4/loose.dtd" />
+	<f:view>
+		<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
+		<ui:insert name="Title">
+		Title
+		</ui:insert>
+		<!--  icefaces rime layout -->
+		<link href="/sis/xmlhttp/css/rime/rime.css" rel="stylesheet"
+			type="text/css" />
+		<!--
+	          PRELOAD IMAGES need for roleovers and layout in general, javascript is only
+	          loaded once per refresh which is good enough.  This improves overall user
+	          experience as they shouldn't have to wait for images to show up after the
+	          initial load.
+	     -->
+		<script type="text/javascript" src="/sis/js/preLoad.js"></script>
+		</head>
+	
+		<body>
+		<ice:form id="mainform">
+		  	<ice:panelGrid columns="3" cellspacing="0" cellpadding="0"
+                  width="100%">
+            	<ice:commandLink action="componentConfig">
+            		<ice:outputText value="Component Config View"></ice:outputText>
+            	</ice:commandLink>
+                <ice:commandLink action="iopConfig">
+            		<ice:outputText value="Configuration of IoP"></ice:outputText>
+				</ice:commandLink>
+                <ice:commandLink action="hapConfig">
+        		<ice:outputText value="Configuration of HAP"></ice:outputText>
+            	</ice:commandLink>  
+            		<ice:commandLink action="metering">
+            	<ice:outputText value="Configuration of Metering Component"></ice:outputText>
+            	</ice:commandLink> 
+            	<ice:commandLink action="ipRangeList">
+            		<ice:outputText value="Configuration of IP Range List"></ice:outputText>
+            	</ice:commandLink> 
+         	    <ice:commandLink action="log">
+            		<ice:outputText value="Log Viewer"></ice:outputText>
+            	</ice:commandLink> 
+                <ice:commandLink action="monitoring">
+            		<ice:outputText value="Monitoring Viewer"></ice:outputText>
+        		</ice:commandLink> 
+         	    <ice:commandLink action="userRole">
+            		<ice:outputText value="Configuration of Users and Roles"></ice:outputText>
+            	</ice:commandLink> 
+			</ice:panelGrid>
+			<ui:insert name="IncludedContent">
+			Included Content
+			</ui:insert>
+		</ice:form>
+		<ice:messages style="color: red" />
+		</body>
+	
+	</f:view>
+</html>

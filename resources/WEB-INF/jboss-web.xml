@@ -1,0 +1,6 @@
+
+<jboss-web>
+
+   <security-domain>java:/jaas/sis-policy</security-domain>
+
+</jboss-web>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="SmoothIT SIS Test" default="all-tests" basedir=".">
+
+	<property file="build.properties" />
+
+	<!-- Classes and Jars used to compile and test the application -->
+	<path id="classpath">
+		<pathelement location="${bin.dir}" />
+		<fileset dir="${common-libs.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${common-tools.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement location="${common-tools.dir}/ejb3unit" />
+	</path>
+
+	<taskdef classpathref="classpath" resource="tasks.properties" />
+	<taskdef name="findbugs" classpathref="classpath" classname="edu.umd.cs.findbugs.anttask.FindBugsTask"/>
+
+	<target name="init">
+		<mkdir dir="${test.reports}" />
+	</target>
+
+	<!-- Removes the Testing directory -->
+	<target name="clean">
+		<delete dir="${test.reports}" />
+		<delete dir="${docs.dir}" />
+	</target>
+
+	<target name="instrument" depends="clean,init">
+		<delete dir="${instrumented.dir}" />
+		<mkdir dir="${instrumented.dir}" />
+		<!--
+			Instrument the application classes, writing the
+			instrumented classes into ${build.instrumented.dir}.
+		-->
+		<cobertura-instrument todir="${instrumented.dir}"
+			datafile="${test.reports}/cobertura/cobertura.ser">
+			<!--
+				The following line causes instrument to ignore any
+				source line containing a reference to log4j, for the
+				purposes of coverage reporting.
+			-->
+			<ignore regex="org.apache.log4j.*" />
+			<ignore regex="eu.smoothit.sis.monitor.impl.Base64" />
+
+			<fileset dir="${bin.dir}">
+				<!--
+					Instrument all the application classes, but
+					don't instrument the test classes.
+				-->
+				<include name="**/*.class" />
+				<exclude name="eu/smoothit/sis/**/test/**/*.*" />
+				<exclude name="eu/smoothit/sis/monitor/impl/xml/*.*" />
+				<exclude name="eu/smoothit/sis/monitor/impl/Base64*" />
+				<exclude name="eu/smoothit/sis/intersis/client/stub/*" />
+				<exclude name="eu/smoothit/sis/intersis/server/jaxws/*" />
+			</fileset>
+		</cobertura-instrument>
+	</target>
+
+	<!-- Runs the tests -->
+	<target name="junit-cobertura" depends="instrument">
+		<mkdir dir="${test.reports}/junit/xml" />
+		<mkdir dir="${test.reports}/cobertura/xml" />
+
+		<echo message="basedir:           ${basedir}"          />
+
+		<junit fork="yes" printsummary="yes" haltonfailure="no">
+
+			<sysproperty key="net.sourceforge.cobertura.datafile"
+				file="${test.reports}/cobertura/cobertura.ser" />
+
+			<batchtest fork="yes" todir="${test.reports}/junit/xml">
+				<fileset dir="${bin.dir}">
+					<include name="eu/smoothit/**/test/**/*.class" />
+					<exclude name="eu/smoothit/sis/db/test/AbstractUnitTest*" />
+				</fileset>
+			</batchtest>
+			<formatter type="xml" />
+			<!--
+				Note the classpath order: instrumented classes are before the
+				original (uninstrumented) classes.  This is important.
+			-->
+			<classpath location="${instrumented.dir}" />
+			<classpath refid="classpath" />
+		</junit>
+
+
+		<junitreport todir="${test.reports}/junit">
+			<fileset dir="${test.reports}/junit/xml">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report todir="${test.reports}/junit" />
+		</junitreport>
+
+		<!--
+			Generate an XML file containing the coverage data using
+			the "srcdir" attribute.
+		-->
+		<cobertura-report srcdir="${src.dir}"
+			destdir="${test.reports}/cobertura"
+			datafile="${test.reports}/cobertura/cobertura.ser" />
+		<cobertura-report srcdir="${src.dir}" format="xml"
+					destdir="${test.reports}/cobertura/xml"
+					datafile="${test.reports}/cobertura/cobertura.ser" />
+		<delete dir="${instrumented.dir}" />
+
+	</target>
+	
+	<target name="all-tests" depends="junit-cobertura,findbugs,javadoc"></target>
+	
+	<target name="findbugs-xml" depends="init">
+		<mkdir dir="${test.reports}/find-bugs/xml" />
+		<findbugs home="${common-tools.dir}/findbugs"
+		            output="xml:withMessages"
+					outputFile="${test.reports}/find-bugs/xml/sis-fb.xml"
+					jvmargs="-Xmx1024m -Xms1024m -XX:MaxPermSize=512m"
+					excludefilter="${common-tools.dir}/findbugs/exclude.xml">
+			<auxClasspath refid="classpath" />
+			<sourcePath path="${src.dir}" />
+			<class location="${bin.dir}" />
+		</findbugs>
+	</target>
+	
+	<target name="findbugs-html" depends="init">
+		<mkdir dir="${test.reports}/find-bugs" />
+		<findbugs home="${common-tools.dir}/findbugs"
+		            output="html"
+					outputFile="${test.reports}/find-bugs/sis-fb.html"
+					jvmargs="-Xmx1024m -Xms1024m -XX:MaxPermSize=512m"
+					stylesheet="fancy.xsl"
+					excludefilter="${common-tools.dir}/findbugs/exclude.xml">
+			<auxClasspath refid="classpath" />
+			<sourcePath path="${src.dir}" />
+			<class location="${bin.dir}" />
+		</findbugs>
+	</target>
+
+	<target name="findbugs" depends="clean,init">
+		<antcall target="findbugs-html" />
+		<antcall target="findbugs-xml" />
+	</target>
+	
+	<target name="javadoc" depends="clean,init">
+		<mkdir dir="${docs.dir}" />
+		<javadoc destdir="${docs.dir}" classpathref="classpath">
+			<packageset dir="${src.dir}" defaultexcludes="yes">
+				<include name="**" />
+			</packageset>
+			<tag name="web.servlet-mapping"
+				description="xDoclet tag"
+				enabled="no" />
+			<tag name="web.servlet"
+				description="xDoclet tag"
+				enabled="no" />
+			<tag name="web.listener"
+				description="xDoclet tag"
+				enabled="no" />
+		</javadoc>
+	</target>
+
+</project>

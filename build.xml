@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="SmoothIT SIS" default="packaging">
+
+	<property file="build.properties" />
+	<target name="init">
+		<echo message="*************************************************************" />
+		<echo message="***  Automated script for building SmoothIT SIS project   ***" />
+		<echo message="*************************************************************" />
+		<echo message="os.name:           ${os.name}"          />
+		<echo message="basedir:           ${basedir}"          />
+		<echo message="ant.file:          ${ant.file}"         />
+		<echo message="ant.project.name:  ${ant.project.name}" />
+		<echo message="ant.version:       ${ant.version}"      />
+		<echo message="ant.java.version:  ${ant.java.version}" />
+		<echo message="java.home:         ${java.home}"        />
+		<echo message="java.vendor:       ${java.vendor}"      />
+	</target>
+
+	<target name="xdoclet" depends="init">
+		<echo message="Running XDoclet..." />
+		<ant antfile="xdoclet-build.xml" target="xdoclet-all" />
+	</target>
+
+	<target name="clean" depends="init">
+		<echo message="Cleaning directories..." />
+		<ant antfile="xdoclet-build.xml" target="clean" />
+		<ant antfile="compile-build.xml" target="clean" />
+		<ant antfile="packaging-build.xml" target="clean" />
+		<ant antfile="junit-build.xml" target="clean" />
+	</target>
+
+	<target name="compile" depends="xdoclet">
+		<echo message="Compiling source files..." />
+		<ant antfile="compile-build.xml" target="clean-compile" />
+	</target>
+
+	<target name="packaging" depends="compile">
+		<ant antfile="packaging-build.xml" target="packaging" />
+	</target>
+
+	<target name="run-tests" depends="packaging">
+		<echo message="Running junit tests." />
+		<ant antfile="junit-build.xml" />
+	</target>
+
+	<target name="undeploy" depends="init" description="Deploy Package">
+		<fail unless="jboss.dir" message="jboss.dir not set. Use 'ant -Djboss.dir=/path/to/jboss'. E.g. 'ant -Djboss.dir=C:/jboss-5.0.0.GA'" />
+		<delete file="${jboss.dir}/server/default/deploy/${package_name}.war" />
+		<delete file="${jboss.dir}/server/default/deploy/${package_name}.ear" />
+		<delete file="${jboss.dir}/server/default/lib/${package_name}-login.jar" />
+		<delete file="${jboss.dir}/server/default/deploy/sis-security-ds.xml" />
+		<delete file="${jboss.dir}/server/default/deploy/mysql-ds.xml" />
+	</target>
+
+	<target name="deploy" depends="packaging,undeploy" description="Deploy Package">
+		<fail unless="jboss.dir" message="jboss.dir not set. Use 'ant -Djboss.dir=/path/to/jboss'. E.g. 'ant -Djboss.dir=C:/jboss-5.0.0.GA'" />
+
+		<!-- delete file="${jboss.dir}/server/default/conf/login-config.xml" />
+		<copy file="${resource.dir}/META-INF/login-config.xml" todir="${jboss.dir}/server/default/conf" / -->
+
+		<!-- copy file="${package.dir}/${package_name}-login.jar" todir="${jboss.dir}/server/default/lib" / -->
+		<copy file="${lib.dir}/mysql/mysql-connector-java-5.1.7-bin.jar" todir="${jboss.dir}/server/default/lib" />
+		<copy file="${package.dir}/${package_name}.ear" todir="${jboss.dir}/server/default/deploy" />
+		<copy file="${resource.dir}/mysql-ds.xml" todir="${jboss.dir}/server/default/deploy" />
+		<!-- replace embedded jsf1.2 of JBoss5.1 with latest jsf2.0, for JBoss version>5.1, there is no need to do so -->
+				<copy file="${lib.dir}/jsf/jsf-api.jar" todir="${jboss.dir}/server/default/deploy/jbossweb.sar/jsf-libs" />
+				<copy file="${lib.dir}/jsf/jsf-impl.jar" todir="${jboss.dir}/server/default/deploy/jbossweb.sar/jsf-libs" />
+	</target>
+
+	<target name="build-test-deploy" depends="run-tests,deploy" description="Build and Deploy Package">
+		<echo message="Building and deploying complete" />
+	</target>
+
+</project>

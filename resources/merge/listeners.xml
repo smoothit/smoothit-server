@@ -1,0 +1,10 @@
+
+<listener>
+	<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
+</listener>
+
+<listener>
+ <listener-class>
+  com.icesoft.faces.util.event.servlet.ContextEventRepeater
+ </listener-class>
+</listener>

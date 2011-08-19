@@ -1,0 +1,98 @@
+<map name="parent">
+	<key name="status">3</key>
+	<key name="down_rate" >8.0126953125</key>
+	<key name="peers">
+		<list name="peers">
+			<item>
+				<map name="0">
+					<key name="down_rate">0.0</key>
+					<key name="up_total">0.0</key>
+					<key name="addr">219.81.154.165:58526:L</key>
+					<key name="g2g">bt</key>
+					<key name="down_str">cI</key>
+					<key name="down_total">0.0</key>
+					<key name="g2g_score">0.0,0.0</key>
+					<key name="up_rate">0.0</key>
+					<key name="id">"-AZ4202-h6MgWpJqjdVl"</key>
+					<key name="up_str">cio</key>
+				</map>
+			</item>
+			<item>
+				<map name="1">
+					<key name="down_rate">6.0859375</key>
+					<key name="up_total">0.0</key>
+					<key name="addr">209.34.91.46:20001:L</key>
+					<key name="g2g">bt</key>
+					<key name="down_str">cI</key>
+					<key name="down_total">32.0</key>
+					<key name="g2g_score">0.0,0.0</key>
+					<key name="up_rate">0.0</key>
+					<key name="id">"-AZ4203-W1QQ43E8kLpH"</key>
+					<key name="up_str">cio</key>
+				</map>
+			</item>
+			<item>
+				<map name="2">
+					<key name="down_rate">1.9267578125</key>
+					<key name="up_total">0.0</key>
+					<key name="addr">81.19.23.42:20001:L</key>
+					<key name="g2g">bt</key>
+					<key name="down_str">cI</key>
+					<key name="down_total">48.0</key>
+					<key name="g2g_score">0.0,0.0</key>
+					<key name="up_rate">0.0</key>
+					<key name="id">"-AZ4203-nlJjMFg1ROCT"</key>
+					<key name="up_str">cio</key>
+				</map>
+			</item>
+			<item>
+				<map name="3">
+					<key name="down_rate">0.0</key>
+					<key name="up_total">0.0</key>
+					<key name="addr">75.169.251.135:62281:L</key>
+					<key name="g2g">bt</key>
+					<key name="down_str">cI</key>
+					<key name="down_total">0.0</key>
+					<key name="g2g_score">0.0,0.0</key>
+					<key name="up_rate">0.0</key>
+					<key name="id">"-AZ4202-SsdmyUHctqdw"</key>
+					<key name="up_str">ciO</key>
+				</map>
+			</item>
+			<item type="dict">
+				<map name="4">
+					<key name="down_rate">0.0</key>
+					<key name="up_total">0.0</key>
+					<key name="addr">82.43.210.234:54492:L</key>
+					<key name="g2g">bt</key>
+					<key name="down_str">cI</key>
+					<key name="down_total">0.0</key>
+					<key name="g2g_score">0.0,0.0</key>
+					<key name="up_rate">0.0</key>
+					<key name="id">"-AZ4202-rv7MWvvfD8U4"</key>
+					<key name="up_str">cio</key>
+				</map>
+			</item>
+		</list>
+	</key>
+	<key name="p_played">0</key>
+	<key name="listenport">11583</key>
+	<key name="t_stall">0</key>
+	<key name="timestamp">1246707651</key>
+	<key name="validrange">(0, 1021)</key>
+	<key name="t_prebuf">-1</key>
+	<key name="filename">Star_Trek_-_Trailer_2_(HD)[PARA00000012].mkv
+	</key>
+	<key name="p_dropped">0</key>
+	<key name="live">False</key>
+	<map name="pieces">
+	</map>
+	<key name="peerid">'R452-----io0H3O8-hj5'</key>
+	<key name="up_total">0.0</key>
+	<key name="down_total">80.0</key>
+	<key name="progress">4.36135031088</key>
+	<key name="up_rate">0.0</key>
+    <key name="infohash">J1x4MDRceGFmXHhiZWlceDE3XHg5OVx4MDAxeTFceGQwOjBceGJmXHhiNSBceGM4XHg4MiYrJw==</key>
+	<key name="id">1</key>
+	<key name="p_late">0</key>
+</map>

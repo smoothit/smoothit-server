@@ -1,0 +1,5 @@
+<FindBugsFilter>
+  <Match>
+    <Class name="~eu\.smoothit\.sis\.monitor\.impl\.Base64.*" />
+  </Match>
+</FindBugsFilter>

@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+          "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+          "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="connection.url">jdbc:mysql://localhost/sis</property>
+		<property name="connection.username">root</property>
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+		<property name="connection.password">root</property>
+		<property name="transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+		<!--
+			thread is the short name for
+			org.hibernate.context.ThreadLocalSessionContext and let Hibernate
+			bind the session automatically to the thread
+		-->
+		<property name="current_session_context_class">thread</property>
+		<!-- this will show us all sql statements -->
+		<property name="hibernate.show_sql">true</property>
+		
+		 <property name="hbm2ddl.auto">update</property>
+
+	  <!-- mapping files -->
+	  <mapping class="eu.smoothit.sis.db.impl.daos.ConfigEntry" />
+	  <mapping class="eu.smoothit.sis.db.impl.daos.IPRangeConfigEntry" />
+	  <mapping class="eu.smoothit.sis.db.impl.daos.PropsConfigEntry" />
+	  <mapping class="eu.smoothit.sis.db.impl.daos.MeteringConfigEntry" />
+	  <mapping class="eu.smoothit.sis.db.impl.daos.SwarmEntityEntry" />
+	  <mapping class="eu.smoothit.sis.db.impl.daos.ClientRequestEntry" />
+	  <mapping class="eu.smoothit.sis.db.impl.daos.ConnectedPeerStatusEntry" />
+	  <mapping class="eu.smoothit.sis.db.impl.daos.PeerStatusEntry" />
+	  <mapping class="eu.smoothit.sis.security.domain.LogEntry" />
+	  <mapping class="eu.smoothit.sis.security.domain.User" />
+	  <mapping class="eu.smoothit.sis.security.domain.UserRole" />
+
+	</session-factory>
+</hibernate-configuration>

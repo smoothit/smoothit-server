@@ -1,0 +1,25 @@
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>HtmlAdaptor</web-resource-name>
+			<description>An example security config that only allows users with
+				the role JBossAdmin to access the HTML web application
+	       </description>
+			<url-pattern>/admin/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>JBossAdmin</role-name>
+		</auth-constraint>
+	</security-constraint>
+	
+	
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>SIS Admin Login</realm-name>
+	</login-config>
+	
+	<security-role>
+		<role-name>JBossAdmin</role-name>
+	</security-role>

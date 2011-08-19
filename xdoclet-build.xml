@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="XDoclet Generation" default="xdoclet-all">
+	
+	<property file="build.properties"/>
+	
+	<target name="init">	
+		<echo message="*************************************"/>
+		<echo message="***  Starting XDoclet generation  ***"/>
+		<echo message="*************************************"/>
+		<path id="xdoclet.classpath">
+			<fileset dir="${xdoclet.basedir}/">
+				<include name="*.jar"/>
+			</fileset>
+		</path>
+    	
+        <mkdir dir="${gensrc.dir}"/>
+    	<mkdir dir="${genresource.dir}"/>  
+    	<mkdir dir="${genresource.dir}/META-INF"/>  
+    	<mkdir dir="${genresource.dir}/WEB-INF"/>  
+	</target>
+	
+    <target name="clean">
+        <delete dir="${gensrc.dir}"/>
+        <delete dir="${genresource.dir}"/>
+    </target>
+	
+	<target name="xdoclet-all" description="Create the necessary resource files using XDoclet" 
+			depends="clean,init,webdoclet">
+	</target>
+
+	<!-- ========================================================================= -->
+	<!-- WebDoclet -->
+	<!-- ========================================================================= -->
+	 <target name="webdoclet">
+	    <taskdef
+	    	name="webdoclet"
+	    	classname="xdoclet.modules.web.WebDocletTask"
+	    	classpathref="xdoclet.classpath"
+	    />
+	    <webdoclet destdir="${genresource.dir}/WEB-INF"
+	    	excludedtags="@version,@author,@WebParam"
+	    	mergeDir="${xdoclet-merge.dir}">
+		    <fileset dir="${src.dir}" includes="**/*.java" >
+		    </fileset>
+		   	<deploymentdescriptor distributable="false" servletspec="2.5" />
+		 	<!-- jbosswebxml securitydomain="java:/jaas/sis-policy" version="4.0" / -->
+	    </webdoclet>
+	</target>
+	
+</project>

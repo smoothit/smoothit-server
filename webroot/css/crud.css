@@ -1,0 +1,101 @@
+/*
+ * crud.jsp CSS styles.
+ */
+
+/* General ------------------------------------------------------------------------------------- */
+
+body, p, input, button {
+    font: normal 8pt verdana, helvetica, sans-serif;
+}
+
+h2 {
+    font-size: 10pt;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.centered {
+    text-align: center;
+}
+.left{
+text-align:left;
+}
+
+.width25 {
+    width: 25%;
+}
+
+.width75 {
+    width: 100%;
+}
+
+/* Table --------------------------------------------------------------------------------------- */
+
+table.dataTable {
+    width: 500px;
+    margin-bottom: 20px;
+}
+
+table.dataTable th {
+    padding: 1px;
+    background-color: #666;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+}
+
+table.dataTable th a {
+    color: #fff;
+}
+
+table.dataTable tr {
+    height: 20px;
+}
+
+table.dataTable tr tr {
+    height: 0px;
+}
+
+table.dataTable tr.rowOdd {
+    background-color: #eee;
+}
+
+table.dataTable tr.rowEven {
+    background-color: #ccc;
+}
+
+table.dataTable td {
+    padding: 0px 1px;
+}
+
+table.dataTable tbody table {
+    margin: 0px auto;
+}
+
+table.dataTable tfoot {
+    background-color: #999;
+}
+
+/* Forms --------------------------------------------------------------------------------------- */
+
+form input {
+    margin: 0px 1px;
+    padding: 1px;
+}
+
+form .input {
+    border: 1px solid #666;
+}
+
+form .highlightInput {
+    border: 1px solid #900;
+    background-color: #fcc;
+}
+
+form .error {
+    color: red;
+}
+

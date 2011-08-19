@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="SmoothIT SIS Packaging" default="packaging">
+
+	<property file="build.properties"/>
+
+	<target name="init">
+		<echo message="**************************************"/>
+		<echo message="***  Starting packaging procedure  ***"/>
+		<echo message="**************************************"/>
+		<mkdir dir="${package.dir}"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="${package.dir}"/>
+	</target>
+
+	<target name="packaging" depends="clean,init" description="Create Package">
+
+		<!-- ========================================================================= -->
+		<!-- CREATE THE MANIFEST -->
+		<!-- ========================================================================= -->
+		<property name="version" value="5.0" />
+
+		<tstamp>
+			<format property="TODAY" pattern="yyyy.MM.dd-HH:mm:ssZ" />
+		</tstamp>
+
+		<manifest file="${package.dir}/MANIFEST.MF">
+			<attribute name="Built-By" value="${user.name}"/>
+			<attribute name="Built-Date" value="${TODAY}"/>
+			<attribute name="Specification-Version" value="${version}"/>
+		</manifest>
+
+		<!-- ========================================================================= -->
+		<!-- CREATE THE WAR PACKAGE -->
+		<!-- ========================================================================= -->
+		<mkdir dir="${package.dir}/${package_name}.war_tmp/WEB-INF/classes"/>
+		<copy todir="${package.dir}/${package_name}.war_tmp/WEB-INF/classes">
+			<fileset dir="${bin.dir}">
+				<include name="eu/smoothit/sis/admin/**/*.*"/>
+				<include name="eu/smoothit/sis/init/web/**/*.*"/>
+				<include name="eu/smoothit/sis/monitor/**/*Servlet.*"/>
+				<exclude name="eu/smoothit/sis/**/test/**/*.*"/>
+			</fileset>
+			<fileset dir="${bin.dir}">
+				<include name="eu/smoothit/sis/security/login/**/*.class" />
+				<include name="eu/smoothit/sis/security/login/**/*.properties"/>
+				<exclude name="eu/smoothit/sis/**/test/**/*.*"/>
+			</fileset>
+		</copy>
+		<copy todir="${package.dir}/${package_name}.war_tmp">
+			<fileset dir="${webroot.dir}"/>
+		</copy>
+		<copy todir="${package.dir}/${package_name}.war_tmp/WEB-INF">
+			<fileset dir="${resource.dir}/WEB-INF">
+				<exclude name="${resource.dir}/WEB-INF/wsdl/*"/>
+			</fileset>
+		</copy>
+		<copy file="${genresource.dir}/WEB-INF/web.xml"
+					tofile="${package.dir}/${package_name}.war_tmp/WEB-INF/web.xml"/>
+		<copy file="${resource.dir}/WEB-INF/jboss-web.xml"
+					tofile="${package.dir}/${package_name}.war_tmp/WEB-INF/jboss-web.xml"/>
+		<copy file="${resource.dir}/WEB-INF/sis-jboss-beans.xml"
+		 			tofile="${package.dir}/${package_name}.war_tmp/WEB-INF/sis-jboss-beans.xml"/> 
+		<jar jarfile="${package.dir}/${package_name}.war"
+		          basedir="${package.dir}/${package_name}.war_tmp"
+		          manifest="${package.dir}/MANIFEST.MF" />
+
+		<!-- ========================================================================= -->
+		<!-- CREATE THE JAR PACKAGE -->
+		<!-- ========================================================================= -->
+
+		<mkdir dir="${package.dir}/${package_name}.jar_tmp/META-INF"/>
+		<copy todir="${package.dir}/${package_name}.jar_tmp">
+			<fileset dir="${bin.dir}">
+				<include name="eu/smoothit/sis/**/*.class" />
+				<include name="eu/smoothit/sis/**/*.conf" />
+				<include name="eu/smoothit/sis/**/*.properties"/>
+				<exclude name="eu/smoothit/sis/init/web/**/*.*"/>
+				<exclude name="eu/smoothit/sis/admin/**/*.*"/>
+				<exclude name="eu/smoothit/sis/security/login/**/*.*"/>
+				<exclude name="eu/smoothit/sis/security/testutils/**/*.*"/>
+				<exclude name="eu/smoothit/sis/**/test/**/*.*"/>
+				<exclude name="eu/smoothit/sis/monitor/**/*Servlet.*"/>
+			</fileset>
+		</copy>
+		<copy file="${resource.dir}/META-INF/persistence.xml"
+				todir="${package.dir}/${package_name}.jar_tmp/META-INF">
+		</copy>
+		<jar jarfile="${package.dir}/${package_name}.jar"
+		          basedir="${package.dir}/${package_name}.jar_tmp"
+		          manifest="${package.dir}/MANIFEST.MF" />
+
+		<!-- ========================================================================= -->
+		<!-- CREATE THE LOGIN JAR PACKAGE -->
+		<!-- ========================================================================= -->
+
+		<!--mkdir dir="${package.dir}/${package_name}-login.jar_tmp/META-INF"/>
+		<copy todir="${package.dir}/${package_name}-login.jar_tmp">
+			<fileset dir="${bin.dir}">
+				<include name="eu/smoothit/sis/security/login/**/*.class" />
+				<include name="eu/smoothit/sis/security/login/**/*.properties"/>
+				<exclude name="eu/smoothit/sis/**/test/**/*.*"/>
+			</fileset>
+		</copy>
+		<jar jarfile="${package.dir}/${package_name}-login.jar"
+		          basedir="${package.dir}/${package_name}-login.jar_tmp"
+		          manifest="${package.dir}/MANIFEST.MF" / -->
+
+		<!-- ========================================================================= -->
+		<!-- CREATE THE EAR PACKAGE -->
+		<!-- ========================================================================= -->
+
+		<mkdir dir="${package.dir}/${package_name}.ear_tmp/META-INF"/>
+		<mkdir dir="${package.dir}/${package_name}.ear_tmp/lib"/>
+		<copy todir="${package.dir}/${package_name}.ear_tmp/lib" flatten="true">
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar"/>
+				<exclude name="**/javaee/*"/>
+				<exclude name="**/hibernate/*"/>
+				<exclude name="**/log4j/*"/>
+				<exclude name="**/jboss/*"/>
+				<exclude name="**mysql-connector**"/>
+				<!-- exclude JSF libs,which copy to JBoss deploy folder -->
+				<exclude name="**/jsf/*"/>
+			</fileset>
+		</copy>
+		<copy file="${package.dir}/${package_name}.war"
+				todir="${package.dir}/${package_name}.ear_tmp">
+		</copy>
+		<copy file="${package.dir}/${package_name}.jar"
+				todir="${package.dir}/${package_name}.ear_tmp">
+		</copy>
+		<!-- copy file="${package.dir}/${package_name}.sar"
+				todir="${package.dir}/${package_name}.ear_tmp">
+		</copy -->
+		<ear destfile="${package.dir}/${package_name}.ear" appxml="${resource.dir}/META-INF/application.xml">
+			<fileset dir="${package.dir}/${package_name}.ear_tmp"/>
+		</ear>
+
+		<!-- ========================================================================= -->
+		<!-- DELETE -->
+		<!-- ========================================================================= -->
+		<delete dir="${package.dir}/${package_name}.war_tmp"/>
+		<delete dir="${package.dir}/${package_name}.jar_tmp"/>
+		<delete dir="${package.dir}/${package_name}.sar_tmp"/>
+		<delete dir="${package.dir}/${package_name}-login.jar_tmp"/>
+		<delete dir="${package.dir}/${package_name}.ear_tmp"/>
+		<delete file="${package.dir}/${package_name}.jar"/>
+		<delete file="${package.dir}/${package_name}.war"/>
+		<delete file="${package.dir}/${package_name}.sar"/>
+		<delete file="${package.dir}/MANIFEST.MF"/>
+
+	</target>
+
+</project>

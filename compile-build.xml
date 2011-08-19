@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Project Compilation" default="clean-compile">
+
+	<property file="build.properties"/>
+
+	<target name="init">
+		<echo message="******************************"/>
+		<echo message="***  Starting compilation  ***"/>
+		<echo message="******************************"/>
+		<path id="anttasks.basedir">
+			<fileset dir="${anttasks.basedir}/">
+				<include name="*.jar"/>
+			</fileset>
+		</path>
+		<mkdir dir="${bin.dir}"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="${bin.dir}"/>
+	</target>
+
+	<target name="compile" depends="init,compile-app,compile-intersisws-client" description="Compile files from source, generated source and test source folders">
+	</target>
+
+	<target name="clean-compile" depends="clean,compile" description="Clean and compile files from source, generated source and test source folders">
+	</target>
+	
+	<target name="compile-app" depends="init" description="Compiles the files from src and gensrc folders">
+		<echo message="** Java files compilation from src and gensrc folders **" />
+		<javac destdir="${bin.dir}" debug="on">
+			<src path="${src.dir}"/>
+			<src path="${gensrc.dir}"/>
+			<src path="${base.dir}/resources/testing"/>
+		    <exclude name="**/intersis/client/**/*.java"/>
+			<classpath>
+				<fileset dir="${common-libs.dir}">
+					<include name="**/*.jar"/>
+				</fileset>
+				<fileset dir="${common-tools.dir}">
+					<include name="junit/*.jar"/>
+					<include name="ejb3unit/*.jar"/>
+					<include name="openejb-3.1.1/lib/*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+		<copy todir="${bin.dir}">
+			<fileset dir="${src.dir}">
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+		
+		<copy todir="${bin.dir}">
+			<fileset dir="${base.dir}/resources/testing"/>
+		</copy>	 
+	</target>
+
+	<!--target name="apt" depends="init">
+		<echo message="Running apt"/>
+
+		<taskdef name="apt" classname="com.sun.tools.ws.ant.Apt">
+			<classpath refid="anttasks.basedir"/>
+		</taskdef>
+		<apt    
+		    destdir="${bin.dir}"
+		    sourcedestdir="${gensrc.dir}"
+		    sourcepath="${src.dir}">
+			<classpath>
+				<fileset dir="${common-libs.dir}">
+					<include name="**/*.jar"/>
+				</fileset>
+				<fileset dir="${common-tools.dir}">
+					<include name="junit/*.jar"/>
+				</fileset>
+			</classpath>
+			<source dir="${src.dir}/eu/smoothit/sis/intersis/impl" includes="*.java"/>
+		</apt>
+	</target-->
+
+	<target name="create-itersis-wsdl" depends="init,compile-app">
+		<echo message="Running wsgen"/>
+		<delete dir="${genresource.dir}/WEB-INF/wsdl"/>
+		<mkdir dir="${genresource.dir}/WEB-INF/wsdl"/>
+		<taskdef name="wsgen" classname="com.sun.tools.ws.ant.WsGen">
+			<classpath refid="anttasks.basedir"/>
+		</taskdef>
+		<wsgen resourcedestdir="${genresource.dir}/WEB-INF/wsdl"
+        	sei="eu.smoothit.sis.intersis.server.impl.InterSisServiceImpl"
+            keep="true"
+            sourcedestdir="${gensrc.dir}"
+            destdir="${bin.dir}"
+            genwsdl="true">
+			<classpath>
+				<pathelement path="${bin.dir}"/>
+			</classpath>
+		</wsgen>
+	</target>
+
+	<target name="create-itersis-client-stub" depends="create-itersis-wsdl">
+		<taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
+			<classpath refid="anttasks.basedir" />
+		</taskdef>
+
+		<echo message="Running wsimport" />
+		<wsimport debug="true"
+			keep="true"
+			destdir="${bin.dir}"
+			package="eu.smoothit.sis.intersis.client.stub"
+			sourcedestdir="${gensrc.dir}"
+			wsdl="${basedir}/${genresource.dir}/WEB-INF/wsdl/InterSisService.wsdl" />
+		<delete dir="${genresource.dir}/WEB-INF/wsdl"/>
+	</target>
+	
+	<target name="compile-intersisws-client" depends="create-itersis-client-stub" description="Compiles the files from src and gensrc folders">
+			<echo message="** Java files compilation for intersis WS client **" />
+			<javac destdir="${bin.dir}" debug="on">
+				<src path="${src.dir}"/>
+			    <include name="**/intersis/client/**/*.java"/>
+				<classpath>
+					<fileset dir="${common-libs.dir}">
+						<include name="**/*.jar"/>
+					</fileset>
+					<fileset dir="${common-tools.dir}">
+						<include name="junit/*.jar"/>
+					</fileset>
+				</classpath>
+			</javac>
+		</target>
+
+</project>
+
